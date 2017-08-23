@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<userAccount>
+    <roles>
+        <role>COMPLIANCE</role>
+        <role>MONITOR</role>
+        <role>ADMINISTRATOR</role>
+    </roles>
+</userAccount>
