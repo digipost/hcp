@@ -14,12 +14,12 @@ func TestAuthenticationToken(t *testing.T) {
 /*
 func TestCreateUserAccounts(t *testing.T) {
 
-
 	hcp := &HCP{
+		URL:      "",
+		Insecure: true,
 		Username: "",
 		Password: "",
-		URL:      "",
-		Insecure: true}
+	}
 
 	userAccount := &UserAccount{
 		Username:                 "mwhite",
@@ -34,7 +34,7 @@ func TestCreateUserAccounts(t *testing.T) {
 	if created, err := hcp.CreateUserAccount(userAccount, ""); err != nil {
 		panic(err)
 	} else {
-		if ! created {
+		if !created {
 
 			t.Fail()
 		}

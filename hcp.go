@@ -1,13 +1,13 @@
 package hcp
 
 import (
-	"bytes"
 	"crypto/md5"
 	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type HCP struct {
@@ -28,38 +28,60 @@ func (hcp *HCP) authenticationToken() string {
 
 func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) (bool, error) {
 
-	if xml, marshalError := userAccount.marshal(); marshalError != nil {
-		return false, marshalError
+	if req, reqErr := hcp.createRequest(http.MethodPut, "/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
+		return false, reqErr
 	} else {
 
-		url := hcp.URL + "/userAccounts?password=" + password
-
-		if request, newRequestError := http.NewRequest(http.MethodPut, url, bytes.NewReader(xml)); newRequestError != nil {
-			return false, newRequestError
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return false, doReqErr
 		} else {
-
-			request.Header.Set("Authorization", "HCP "+hcp.authenticationToken())
-			request.Header.Set("Content-Type", "application/xml")
-
-			client := createClient(true)
-
-			if response, doRequestErr := client.Do(request); doRequestErr != nil {
-				return false, doRequestErr
-			} else {
-				return response.StatusCode == 200, nil
-			}
-
+			return res.StatusCode == 200, nil
 		}
 
 	}
 
 }
 
-func createClient(insecure bool) http.Client {
+func (hcp *HCP) CreateNamespace(namespace *Namespace) (bool, error) {
+
+	if req, reqErr := hcp.createRequest(http.MethodPut, "/namespaces",
+		namespace); reqErr != nil {
+		return false, reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return false, doReqErr
+		} else {
+			return res.StatusCode == 200, nil
+		}
+
+	}
+
+}
+
+func (hcp *HCP) createRequest(method string, urlStr string, xml Request) (*http.Request, error) {
+
+	if reader, error := xml.Reader(); error != nil {
+		return nil, error
+	} else {
+
+		if request, newRequestError := http.NewRequest(method, hcp.URL+urlStr, reader); newRequestError != nil {
+			return nil, newRequestError
+		} else {
+
+			request.Header.Set("Authorization", "HCP "+hcp.authenticationToken())
+			request.Header.Set("Content-Type", "application/xml")
+			return request, nil
+		}
+	}
+
+}
+
+func (hcp *HCP) getClient() *http.Client {
 
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: insecure},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: hcp.Insecure},
 	}
-	return http.Client{Transport: tr}
+	return &http.Client{Transport: tr}
 
 }
