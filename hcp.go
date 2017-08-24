@@ -26,33 +26,47 @@ func (hcp *HCP) authenticationToken() string {
 	return username + ":" + password
 }
 
-func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) (bool, error) {
+func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) error {
 
 	if req, reqErr := hcp.createRequest(http.MethodPut, "/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
-		return false, reqErr
+		return reqErr
 	} else {
 
 		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
-			return false, doReqErr
+			return doReqErr
 		} else {
-			return res.StatusCode == 200, nil
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to create user account for username: %s. Status code: %s, HCP error message: %s",
+					userAccount.Username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+
 		}
 
 	}
 
 }
 
-func (hcp *HCP) CreateNamespace(namespace *Namespace) (bool, error) {
+func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 
-	if req, reqErr := hcp.createRequest(http.MethodPut, "/namespaces",
-		namespace); reqErr != nil {
-		return false, reqErr
+	if req, reqErr := hcp.createRequest(http.MethodPut, "/namespaces", namespace); reqErr != nil {
+		return reqErr
 	} else {
 
 		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
-			return false, doReqErr
+			return doReqErr
 		} else {
-			return res.StatusCode == 200, nil
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to create namespace: %s. Status code: %s, HCP error message: %s",
+					namespace.Name,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
 		}
 
 	}
@@ -75,6 +89,10 @@ func (hcp *HCP) createRequest(method string, urlStr string, xml Request) (*http.
 		}
 	}
 
+}
+
+func hcpErrorMessage(response *http.Response) string {
+	return response.Header.Get("X-HCP-ErrorMessage")
 }
 
 func (hcp *HCP) getClient() *http.Client {
