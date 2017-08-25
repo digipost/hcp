@@ -36,7 +36,7 @@ func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) err
 			return doReqErr
 		} else {
 			if res.StatusCode != http.StatusOK {
-				return fmt.Errorf("Failed to create user account for username: %s. Status code: %s, HCP error message: %s",
+				return fmt.Errorf("Failed to create HCP user account for username: %s. Status code: %d, HCP error message: %s",
 					userAccount.Username,
 					res.StatusCode,
 					hcpErrorMessage(res))
@@ -60,7 +60,7 @@ func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 			return doReqErr
 		} else {
 			if res.StatusCode != http.StatusOK {
-				return fmt.Errorf("Failed to create namespace: %s. Status code: %s, HCP error message: %s",
+				return fmt.Errorf("Failed to create HCP namespace: %s. Status code: %d, HCP error message: %s",
 					namespace.Name,
 					res.StatusCode,
 					hcpErrorMessage(res))
