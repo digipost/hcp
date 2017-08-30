@@ -11,12 +11,15 @@ import (
 	"net/url"
 )
 
+const x_HCP_ERROR_MESSAGE = "X-HCP-ErrorMessage"
+
 type HCP struct {
 	// "https://finance.hcp.example.com:9090/mapi/tenants/finance
 	URL      string
 	Insecure bool
 	Username string
 	Password string
+	client   *http.Client
 }
 
 func (hcp *HCP) authenticationToken() string {
@@ -152,14 +155,19 @@ func (hcp *HCP) createRequest(method string, urlStr string, body io.Reader) (*ht
 }
 
 func hcpErrorMessage(response *http.Response) string {
-	return response.Header.Get("X-HCP-ErrorMessage")
+	return response.Header.Get(x_HCP_ERROR_MESSAGE)
 }
 
 func (hcp *HCP) getClient() *http.Client {
 
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: hcp.Insecure},
+	if hcp.client == nil {
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: hcp.Insecure},
+		}
+		hcp.client = &http.Client{Transport: tr}
+
 	}
-	return &http.Client{Transport: tr}
+
+	return hcp.client
 
 }
