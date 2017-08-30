@@ -5,9 +5,17 @@ import (
 	"encoding/xml"
 )
 
-/**
- * UserAccount
- */
+func unmarshal(in []byte, out Payload) error {
+	return xml.Unmarshal(in, out)
+}
+
+type Payload interface {
+	Reader() (*bytes.Reader, error)
+}
+
+/************************
+ *      UserAccount
+ ************************/
 
 // Roles
 const (
@@ -16,10 +24,6 @@ const (
 	MONITOR       = "MONITOR"
 	SECURITY      = "SECURITY"
 )
-
-type Request interface {
-	Reader() (*bytes.Reader, error)
-}
 
 type UserAccount struct {
 	XMLName                  xml.Name `xml:"userAccount"`
@@ -45,9 +49,9 @@ func (uA *UserAccount) Reader() (*bytes.Reader, error) {
 	}
 }
 
-/**
- * Namespace
- */
+/************************
+ *      Namespace
+ ************************/
 
 // Hashing schemes
 const (

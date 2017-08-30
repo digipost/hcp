@@ -1,7 +1,6 @@
 package hcp
 
 import (
-	"encoding/xml"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
@@ -11,9 +10,8 @@ func TestShoulBeAbleToUnmarshalUserAccountXML(t *testing.T) {
 
 	data, _ := ioutil.ReadFile("xml/userAccount_CreateUser.xml")
 
-	userAccount := UserAccount{}
-
-	xml.Unmarshal(data, &userAccount)
+	userAccount := &UserAccount{}
+	unmarshal(data, userAccount)
 
 	assert.Equal(t, "mwhite", userAccount.Username)
 	assert.Equal(t, "Morgan White", userAccount.FullName)
@@ -30,19 +28,17 @@ func TestShoulBeAbleToUnmarshalUserAccountXML(t *testing.T) {
 
 func TestShouldOmitIfEmptyOnUserAccountXML(t *testing.T) {
 
-	userAccount := &UserAccount{Roles: []string{COMPLIANCE, MONITOR, ADMINISTRATOR}}
-	xml, _ := userAccount.marshal()
+	xml, _ := (&UserAccount{Roles: []string{COMPLIANCE, MONITOR, ADMINISTRATOR}}).marshal()
 	assert.Equal(t, "<userAccount><roles><role>COMPLIANCE</role><role>MONITOR</role><role>ADMINISTRATOR</role></roles></userAccount>", string(xml))
 
 }
 
-func TestShouldBeAbleToNamespaceXML(t *testing.T) {
+func TestShouldBeAbleToUnmarshalNamespaceXML(t *testing.T) {
 
 	data, _ := ioutil.ReadFile("xml/namespace_CreateNamespace.xml")
 
-	ns := Namespace{}
-
-	xml.Unmarshal(data, &ns)
+	ns := &Namespace{}
+	unmarshal(data, ns)
 
 	assert.Equal(t, "Accounts-Receivable", ns.Name)
 	assert.Equal(t, "Created for the Finance department at Example Company by Lee Green on 2/9/2012.", ns.Description)

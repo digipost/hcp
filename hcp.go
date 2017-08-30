@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -26,9 +27,11 @@ func (hcp *HCP) authenticationToken() string {
 	return username + ":" + password
 }
 
+/** User Account methods */
+
 func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) error {
 
-	if req, reqErr := hcp.createRequest(http.MethodPut, "/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
+	if req, reqErr := hcp.createPutRequest("/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
 		return reqErr
 	} else {
 
@@ -50,9 +53,44 @@ func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) err
 
 }
 
+func (hcp *HCP) UserAccount(username string) (*UserAccount, error) {
+
+	if req, reqErr := hcp.createGetRequest("/userAccounts/" + username); reqErr != nil {
+		return nil, reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return nil, doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return nil, fmt.Errorf("Failed to retrieve HCP user account for username: %s. Status code: %d, HCP error message: %s",
+					username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+
+				if bytes, readErr := ioutil.ReadAll(res.Body); readErr != nil {
+					return nil, readErr
+				} else {
+					userAccount := &UserAccount{}
+					if unmarshalErr := unmarshal(bytes, userAccount); unmarshalErr != nil {
+						return nil, unmarshalErr
+					} else {
+						return userAccount, nil
+					}
+				}
+
+			}
+		}
+
+	}
+}
+
+/** Namespace methods **/
+
 func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 
-	if req, reqErr := hcp.createRequest(http.MethodPut, "/namespaces", namespace); reqErr != nil {
+	if req, reqErr := hcp.createPutRequest("/namespaces", namespace); reqErr != nil {
 		return reqErr
 	} else {
 
@@ -73,20 +111,42 @@ func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 
 }
 
-func (hcp *HCP) createRequest(method string, urlStr string, xml Request) (*http.Request, error) {
+// VERBS
+
+func (hcp *HCP) createGetRequest(urlStr string) (*http.Request, error) {
+	return hcp.createRequest(http.MethodGet, urlStr, nil)
+}
+
+func (hcp *HCP) createDeleteRequest(urlStr string) (*http.Request, error) {
+	return hcp.createRequest(http.MethodDelete, urlStr, nil)
+}
+
+func (hcp *HCP) createPutRequest(urlStr string, xml Payload) (*http.Request, error) {
+	return hcp.createRequestWithPayload(http.MethodPut, urlStr, xml)
+}
+
+func (hcp *HCP) createPostRequest(urlStr string, xml Payload) (*http.Request, error) {
+	return hcp.createRequestWithPayload(http.MethodPost, urlStr, xml)
+}
+
+func (hcp *HCP) createRequestWithPayload(method string, urlStr string, xml Payload) (*http.Request, error) {
 
 	if reader, error := xml.Reader(); error != nil {
 		return nil, error
 	} else {
+		return hcp.createRequest(method, urlStr, reader)
+	}
 
-		if request, newRequestError := http.NewRequest(method, hcp.URL+urlStr, reader); newRequestError != nil {
-			return nil, newRequestError
-		} else {
+}
 
-			request.Header.Set("Authorization", "HCP "+hcp.authenticationToken())
-			request.Header.Set("Content-Type", "application/xml")
-			return request, nil
-		}
+func (hcp *HCP) createRequest(method string, urlStr string, body io.Reader) (*http.Request, error) {
+
+	if req, err := http.NewRequest(method, hcp.URL+urlStr, body); err != nil {
+		return nil, err
+	} else {
+		req.Header.Set("Authorization", "HCP "+hcp.authenticationToken())
+		req.Header.Set("Content-Type", "application/xml")
+		return req, nil
 	}
 
 }
