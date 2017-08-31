@@ -8,7 +8,7 @@ import (
 
 func TestShoulBeAbleToUnmarshalUserAccountXML(t *testing.T) {
 
-	data, _ := ioutil.ReadFile("xml/userAccount_CreateUser.xml")
+	data, _ := ioutil.ReadFile("xml/userAccount/request/CreateUserAccount.xml")
 
 	userAccount := &UserAccount{}
 	unmarshal(data, userAccount)
@@ -35,7 +35,7 @@ func TestShouldOmitIfEmptyOnUserAccountXML(t *testing.T) {
 
 func TestShouldBeAbleToUnmarshalNamespaceXML(t *testing.T) {
 
-	data, _ := ioutil.ReadFile("xml/namespace_CreateNamespace.xml")
+	data, _ := ioutil.ReadFile("xml/namespace/request/CreateNamespace.xml")
 
 	ns := &Namespace{}
 	unmarshal(data, ns)

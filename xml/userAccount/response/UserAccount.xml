@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<userAccount>
+    <username>mwhite</username>
+    <fullName>Morgan White</fullName>
+    <description>Compliance officer.</description>
+    <localAuthentication>true</localAuthentication>
+    <forcePasswordChange>true</forcePasswordChange>
+    <enabled>true</enabled>
+    <roles>
+        <role>COMPLIANCE</role>
+        <role>MONITOR</role>
+    </roles>
+    <allowNamespaceManagement>false</allowNamespaceManagement>
+</userAccount>

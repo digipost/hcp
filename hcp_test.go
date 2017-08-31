@@ -2,6 +2,7 @@ package hcp
 
 import (
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -94,6 +95,24 @@ func TestUserAccountFails(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), errorMsg)
 
+}
+
+func TestUserAccount(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+		data, _ := ioutil.ReadFile("xml/userAccount/response/UserAccount.xml")
+		res.Write(data)
+	}))
+
+	hcp := &HCP{
+		URL: ts.URL,
+	}
+
+	uA, err := hcp.UserAccount("mwhite")
+
+	assert.Empty(t, err)
+	assert.Equal(t, "mwhite", uA.Username)
 }
 
 /*
