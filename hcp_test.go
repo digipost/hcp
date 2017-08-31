@@ -45,7 +45,7 @@ func TestCreateUserAccountSuccess(t *testing.T) {
 
 }
 
-func TestCreateUserAccountFails(t *testing.T) {
+func TestCreateUserAccountFailure(t *testing.T) {
 
 	const errorMsg = "Some random error"
 
@@ -77,7 +77,7 @@ func TestCreateUserAccountFails(t *testing.T) {
 
 // User Account - Read
 
-func TestUserAccountFails(t *testing.T) {
+func TestUserAccountFailure(t *testing.T) {
 
 	const errorMsg = "Some random error"
 
@@ -97,7 +97,7 @@ func TestUserAccountFails(t *testing.T) {
 
 }
 
-func TestUserAccount(t *testing.T) {
+func TestUserAccountSuccess(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(http.StatusOK)
@@ -113,6 +113,47 @@ func TestUserAccount(t *testing.T) {
 
 	assert.Empty(t, err)
 	assert.Equal(t, "mwhite", uA.Username)
+}
+
+/** Namespace methods */
+
+// Namespace - Create
+
+func TestNamespaceSuccess(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+	}))
+
+	hcp := &HCP{
+		URL: ts.URL,
+	}
+
+	namespace := &Namespace{Name: "mynamespace", Description: "My description"}
+
+	err := hcp.CreateNamespace(namespace)
+
+	assert.Empty(t, err)
+}
+
+func TestNamespaceFailure(t *testing.T) {
+
+	const errorMsg = "Invalid namespace name"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.Header().Set(x_HCP_ERROR_MESSAGE, errorMsg)
+		res.WriteHeader(http.StatusBadRequest)
+	}))
+
+	hcp := &HCP{
+		URL: ts.URL,
+	}
+
+	namespace := &Namespace{Name: "invalid namespace name"}
+
+	err := hcp.CreateNamespace(namespace)
+
+	assert.Contains(t, err.Error(), errorMsg)
 }
 
 /*
