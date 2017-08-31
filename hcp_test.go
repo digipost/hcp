@@ -167,8 +167,6 @@ func TestDeleteUserAccountSuccess(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(http.StatusOK)
-		assert.Contains(t, r.URL.Path, "mwhite")
-		assert.Equal(t, http.MethodDelete, r.Method)
 	}))
 
 	hcp := &HCP{URL: ts.URL}
@@ -176,6 +174,38 @@ func TestDeleteUserAccountSuccess(t *testing.T) {
 	err := hcp.DeleteUserAccount("mwhite")
 
 	assert.Empty(t, err)
+}
+
+func TestDeleteUserAccountFailure(t *testing.T) {
+
+	const errorMessage = "some error message"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.Header().Set(x_HCP_ERROR_MESSAGE, errorMessage)
+		res.WriteHeader(http.StatusBadRequest)
+
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	err := hcp.DeleteUserAccount("mwhite")
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), errorMessage)
+}
+
+func TestDeleteUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+		assert.Contains(t, r.URL.Path, "mwhite")
+		assert.Equal(t, http.MethodDelete, r.Method)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	hcp.DeleteUserAccount("mwhite")
+
 }
 
 /** Namespace methods */
