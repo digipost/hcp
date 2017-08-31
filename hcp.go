@@ -111,6 +111,27 @@ func (hcp *HCP) UserAccount(username string) (*UserAccount, error) {
 	}
 }
 
+func (hcp *HCP) DeleteUserAccount(username string) error {
+	if req, reqErr := hcp.createDeleteRequest("/userAccounts/" + username); reqErr != nil {
+		return reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to delete HCP user account for username: %s. Status code: %d, HCP error message: %s",
+					username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+		}
+
+	}
+}
+
 /** Namespace methods **/
 
 func (hcp *HCP) CreateNamespace(namespace *Namespace) error {

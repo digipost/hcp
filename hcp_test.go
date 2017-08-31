@@ -72,6 +72,7 @@ func TestCreateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		assert.NotContains(t, r.URL.Path, userAccount.Username)
+		assert.Equal(t, r.Method, http.MethodPut)
 	}))
 	defer ts.Close()
 
@@ -103,6 +104,7 @@ func TestUpdateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		assert.Contains(t, r.URL.Path, userAccount.Username)
+		assert.Equal(t, r.Method, http.MethodPost)
 	}))
 	defer ts.Close()
 
@@ -112,6 +114,22 @@ func TestUpdateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 }
 
 // User Account - Read
+
+func TestUserAccountSuccess(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+		data, _ := ioutil.ReadFile("xml/userAccount/response/UserAccount.xml")
+		res.Write(data)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	uA, err := hcp.UserAccount("mwhite")
+
+	assert.Empty(t, err)
+	assert.Equal(t, "mwhite", uA.Username)
+}
 
 func TestUserAccountFailure(t *testing.T) {
 
@@ -130,20 +148,34 @@ func TestUserAccountFailure(t *testing.T) {
 
 }
 
-func TestUserAccountSuccess(t *testing.T) {
+func TestUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.Contains(t, r.URL.Path, "mwhite")
+		assert.Equal(t, r.Method, http.MethodGet)
+	}))
+	defer ts.Close()
+
+	hcp := &HCP{URL: ts.URL}
+	hcp.UserAccount("mwhite")
+
+}
+
+// User Account - Delete
+
+func TestDeleteUserAccountSuccess(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(http.StatusOK)
-		data, _ := ioutil.ReadFile("xml/userAccount/response/UserAccount.xml")
-		res.Write(data)
+		assert.Contains(t, r.URL.Path, "mwhite")
+		assert.Equal(t, http.MethodDelete, r.Method)
 	}))
 
 	hcp := &HCP{URL: ts.URL}
 
-	uA, err := hcp.UserAccount("mwhite")
+	err := hcp.DeleteUserAccount("mwhite")
 
 	assert.Empty(t, err)
-	assert.Equal(t, "mwhite", uA.Username)
 }
 
 /** Namespace methods */
