@@ -132,6 +132,26 @@ func (hcp *HCP) DeleteUserAccount(username string) error {
 	}
 }
 
+func (hcp *HCP) UserAccountExists(username string) (bool, error) {
+	if req, reqErr := hcp.createHeadRequest("/userAccounts/" + username); reqErr != nil {
+		return false, reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return false, doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNotFound {
+				return false, fmt.Errorf("Failed to check existence of HCP user account for username: %s. Status code: %d, HCP error message: %s",
+					username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			}
+			return res.StatusCode == http.StatusOK, nil
+		}
+
+	}
+}
+
 /** Namespace methods **/
 
 func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
@@ -158,6 +178,10 @@ func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 }
 
 // VERBS
+
+func (hcp *HCP) createHeadRequest(urlStr string) (*http.Request, error) {
+	return hcp.createRequest(http.MethodHead, urlStr, nil)
+}
 
 func (hcp *HCP) createGetRequest(urlStr string) (*http.Request, error) {
 	return hcp.createRequest(http.MethodGet, urlStr, nil)

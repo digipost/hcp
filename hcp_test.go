@@ -208,6 +208,61 @@ func TestDeleteUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
 }
 
+// User Account - Exists
+
+func TestUserAccountExistsSuccessFound(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	exists, err := hcp.UserAccountExists("mwhite")
+	assert.True(t, exists)
+	assert.Empty(t, err)
+}
+
+func TestUserAccountExistsSuccessNotFound(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusNotFound)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	exists, err := hcp.UserAccountExists("mwhite")
+	assert.False(t, exists)
+	assert.Empty(t, err)
+}
+
+func TestUserAccountExistsFailure(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusBadGateway)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	exists, err := hcp.UserAccountExists("mwhite")
+	assert.False(t, exists)
+	assert.Error(t, err)
+}
+
+func TestUserAccountExistsShouldTargetCorrectEndpoint(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.Contains(t, r.URL.Path, "white")
+		assert.Equal(t, r.Method, http.MethodHead)
+		res.WriteHeader(http.StatusOK)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	hcp.UserAccountExists("mwhite")
+
+}
+
 /** Namespace methods */
 
 // Namespace - Create
