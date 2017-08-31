@@ -8,10 +8,25 @@ import (
 	"testing"
 )
 
+const validPassword = "12345asdfasdf"
+
 func TestAuthenticationToken(t *testing.T) {
 	hcp := HCP{Username: "lgreen", Password: "p4ssw0rd"}
 	assert.Equal(t, "bGdyZWVu:2a9d119df47ff993b662a8ef36f9ea20", hcp.authenticationToken())
+}
 
+func TestPassword(t *testing.T) {
+	assert.True(t, alphabetic("asdf"))
+	assert.False(t, alphabetic("123"))
+	assert.True(t, numeric("123"))
+	assert.False(t, numeric("asdf"))
+	assert.True(t, other("!$%&"))
+	assert.False(t, other("asdf"))
+	assert.False(t, other("123"))
+	assert.Error(t, validatePassword("1234567890"))
+	assert.Error(t, validatePassword("aaaaaaaaaa"))
+	assert.Error(t, validatePassword("!!!!!!!!!!"))
+	assert.Empty(t, validatePassword("12345asdfa"))
 }
 
 /** User Account methods */
@@ -22,26 +37,14 @@ func TestCreateUserAccountSuccess(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(http.StatusOK)
-
 	}))
 
 	defer ts.Close()
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
+	userAccount := &UserAccount{Username: "mwhite"}
 
-	userAccount := &UserAccount{
-		Username:                 "mwhite",
-		FullName:                 "Morgan White",
-		Description:              "Compliance officer.",
-		LocalAuthentication:      true,
-		ForcePasswordChange:      true,
-		Enabled:                  true,
-		AllowNamespaceManagement: false,
-	}
-
-	assert.Empty(t, hcp.CreateUserAccount(userAccount, "whatever"))
+	assert.Empty(t, hcp.CreateUserAccount(userAccount, validPassword))
 
 }
 
@@ -52,26 +55,59 @@ func TestCreateUserAccountFailure(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.Header().Set(x_HCP_ERROR_MESSAGE, errorMsg)
 		res.WriteHeader(http.StatusBadRequest)
-
 	}))
 
 	defer ts.Close()
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
+	userAccount := &UserAccount{Username: "mwhite"}
 
-	userAccount := &UserAccount{
-		Username:                 "mwhite",
-		FullName:                 "Morgan White",
-		Description:              "Compliance officer.",
-		LocalAuthentication:      true,
-		ForcePasswordChange:      true,
-		Enabled:                  true,
-		AllowNamespaceManagement: false,
-	}
+	assert.Contains(t, hcp.CreateUserAccount(userAccount, validPassword).Error(), errorMsg)
 
-	assert.Contains(t, hcp.CreateUserAccount(userAccount, "whatever").Error(), errorMsg)
+}
+
+func TestCreateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
+
+	userAccount := &UserAccount{Username: "username"}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.NotContains(t, r.URL.Path, userAccount.Username)
+	}))
+	defer ts.Close()
+
+	hcp := &HCP{URL: ts.URL}
+	hcp.CreateUserAccount(userAccount, validPassword)
+
+}
+
+// User Account - Update
+
+func TestUpdateUserAccountSuccess(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+	}))
+
+	defer ts.Close()
+
+	hcp := &HCP{URL: ts.URL}
+	userAccount := &UserAccount{Username: "mwhite"}
+
+	assert.Empty(t, hcp.UpdateUserAccount(userAccount, validPassword))
+
+}
+
+func TestUpdateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
+
+	userAccount := &UserAccount{Username: "username"}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.Contains(t, r.URL.Path, userAccount.Username)
+	}))
+	defer ts.Close()
+
+	hcp := &HCP{URL: ts.URL}
+	hcp.UpdateUserAccount(userAccount, validPassword)
 
 }
 
@@ -84,12 +120,9 @@ func TestUserAccountFailure(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.Header().Set(x_HCP_ERROR_MESSAGE, errorMsg)
 		res.WriteHeader(http.StatusInternalServerError)
-
 	}))
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
 
 	_, err := hcp.UserAccount("mwhite")
 	assert.Error(t, err)
@@ -105,9 +138,7 @@ func TestUserAccountSuccess(t *testing.T) {
 		res.Write(data)
 	}))
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
 
 	uA, err := hcp.UserAccount("mwhite")
 
@@ -125,9 +156,7 @@ func TestNamespaceSuccess(t *testing.T) {
 		res.WriteHeader(http.StatusOK)
 	}))
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
 
 	namespace := &Namespace{Name: "mynamespace", Description: "My description"}
 
@@ -145,9 +174,7 @@ func TestNamespaceFailure(t *testing.T) {
 		res.WriteHeader(http.StatusBadRequest)
 	}))
 
-	hcp := &HCP{
-		URL: ts.URL,
-	}
+	hcp := &HCP{URL: ts.URL}
 
 	namespace := &Namespace{Name: "invalid namespace name"}
 

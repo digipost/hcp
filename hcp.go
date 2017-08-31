@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 )
 
 const x_HCP_ERROR_MESSAGE = "X-HCP-ErrorMessage"
@@ -33,23 +34,44 @@ func (hcp *HCP) authenticationToken() string {
 /** User Account methods */
 
 func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) error {
+	return hcp.createOrUpdateUserAccount(true, userAccount, password)
+}
 
-	if req, reqErr := hcp.createPutRequest("/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
-		return reqErr
-	} else {
+func (hcp *HCP) UpdateUserAccount(userAccount *UserAccount, password string) error {
+	return hcp.createOrUpdateUserAccount(false, userAccount, password)
+}
 
-		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
-			return doReqErr
+func (hcp *HCP) createOrUpdateUserAccount(create bool, userAccount *UserAccount, password string) error {
+
+	if err := validatePassword(password); err != nil {
+		return err
+	}
+
+	var request *http.Request
+	if create {
+		if req, reqErr := hcp.createPutRequest("/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
+			return reqErr
 		} else {
-			if res.StatusCode != http.StatusOK {
-				return fmt.Errorf("Failed to create HCP user account for username: %s. Status code: %d, HCP error message: %s",
-					userAccount.Username,
-					res.StatusCode,
-					hcpErrorMessage(res))
-			} else {
-				return nil
-			}
+			request = req
+		}
+	} else {
+		if req, reqErr := hcp.createPostRequest("/userAccounts/"+userAccount.Username+"?password="+url.QueryEscape(password), userAccount); reqErr != nil {
+			return reqErr
+		} else {
+			request = req
+		}
+	}
 
+	if res, doReqErr := hcp.getClient().Do(request); doReqErr != nil {
+		return doReqErr
+	} else {
+		if res.StatusCode != http.StatusOK {
+			return fmt.Errorf("Failed to create HCP user account for username: %s. Status code: %d, HCP error message: %s",
+				userAccount.Username,
+				res.StatusCode,
+				hcpErrorMessage(res))
+		} else {
+			return nil
 		}
 
 	}
@@ -158,8 +180,43 @@ func hcpErrorMessage(response *http.Response) string {
 	return response.Header.Get(x_HCP_ERROR_MESSAGE)
 }
 
-func (hcp *HCP) getClient() *http.Client {
+/**
+* Passwords can be up to 64 characters long, are case sensitive,
+* and can contain any valid UTF-8 characters, including white space.
+* To be valid, a password must include at least one character from two
+* of these three groups: alphabetic, numeric, and other.
+ */
+func validatePassword(password string) error {
+	// it's 2017, man!
+	if len(password) < 10 {
+		return fmt.Errorf("Password too short")
+	} else if len(password) > 64 {
+		return fmt.Errorf("Password too long")
+	} else if !(alphabetic(password) && numeric(password) ||
+		alphabetic(password) && other(password) ||
+		numeric(password) && other(password)) {
+		return fmt.Errorf("Password must include at least one character from two of these three groups: " +
+			"alphabetic, numeric, and other.")
+	} else {
+		return nil
+	}
+}
 
+func alphabetic(str string) bool {
+	matched, _ := regexp.Match("[[:alpha:]]", []byte(str))
+	return matched
+}
+
+func numeric(str string) bool {
+	matched, _ := regexp.Match("\\d", []byte(str))
+	return matched
+}
+
+func other(str string) bool {
+	return !numeric(str) && !alphabetic(str)
+}
+
+func (hcp *HCP) getClient() *http.Client {
 	if hcp.client == nil {
 		tr := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: hcp.Insecure},
@@ -167,7 +224,5 @@ func (hcp *HCP) getClient() *http.Client {
 		hcp.client = &http.Client{Transport: tr}
 
 	}
-
 	return hcp.client
-
 }
