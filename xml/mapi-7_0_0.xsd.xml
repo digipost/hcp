@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="IngestGatewayReport" type="ingestGatewayList"/>
+
+  <xs:element name="VolumeMetricsReport" type="volumeMetricsList"/>
+
+  <xs:element name="addresses" type="addresses"/>
+
+  <xs:element name="authenticationTypes" type="mapiAuthenticationTypes"/>
+
+  <xs:element name="availableServicePlan" type="mapiServicePlan"/>
+
+  <xs:element name="availableServicePlans" type="servicePlanList"/>
+
+  <xs:element name="chainedLinks" type="mapiLinkContentChainedLinks"/>
+
+  <xs:element name="chargebackData" type="mapiChargebackData"/>
+
+  <xs:element name="chargebackReport" type="chargebackList"/>
+
+  <xs:element name="cifsProtocol" type="mapiCifsProtocol"/>
+
+  <xs:element name="complianceSettings" type="mapiComplianceSettings"/>
+
+  <xs:element name="connection" type="connectionSettings"/>
+
+  <xs:element name="consoleSecurity" type="mapiConsoleSecurity"/>
+
+  <xs:element name="contactInfo" type="mapiContactInformation"/>
+
+  <xs:element name="content" type="mapiLinkContent"/>
+
+  <xs:element name="contentClass" type="mapiContentClass"/>
+
+  <xs:element name="contentClasses" type="contentClassList"/>
+
+  <xs:element name="customMetadataIndexingSettings" type="mapiCustomMetadataIndexingSettings"/>
+
+  <xs:element name="dataAccessAccount" type="mapiDataUser"/>
+
+  <xs:element name="dataAccessAccounts" type="dataUserList"/>
+
+  <xs:element name="dataAccessPermissions" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="defaultNamespaceDirectories" type="mapiLinkContentDirectories"/>
+
+  <xs:element name="emailNotification" type="mapiEmailNotification"/>
+
+  <xs:element name="failoverSettings" type="mapiLinkFailoverSettings"/>
+
+  <xs:element name="groupAccount" type="mapiGroupAccount"/>
+
+  <xs:element name="groupAccounts" type="groupAccountList"/>
+
+  <xs:element name="httpProtocol" type="mapiHttpAndWebdavProtocols"/>
+
+  <xs:element name="ipSettings" type="mapiipSettings"/>
+
+  <xs:element name="link" type="mapiLink"/>
+
+  <xs:element name="links" type="linksList"/>
+
+  <xs:element name="namespace" type="mapiNamespace"/>
+
+  <xs:element name="namespaceDefaults" type="mapiNamespaceDefaults"/>
+
+  <xs:element name="namespacePermissions" type="namespacePermissions"/>
+
+  <xs:element name="namespaces" type="namespacesList"/>
+
+  <xs:element name="nfsProtocol" type="mapiNfsProtocol"/>
+
+  <xs:element name="permissions" type="permissionsList"/>
+
+  <xs:element name="protocols" type="mapiNamespaceProtocols"/>
+
+  <xs:element name="replicationCollisionSettings" type="mapiReplicationCollisionSettings"/>
+
+  <xs:element name="replicationService" type="mapiReplicationService"/>
+
+  <xs:element name="resourceMetricsData" type="mapiResourceMetricsData"/>
+
+  <xs:element name="resourceMetricsReport" type="resourceMetricsList"/>
+
+  <xs:element name="retentionClass" type="mapiRetentionClass"/>
+
+  <xs:element name="retentionClasses" type="retentionClassList"/>
+
+  <xs:element name="roles" type="rolesList"/>
+
+  <xs:element name="schedule" type="mapiLinkSchedules"/>
+
+  <xs:element name="searchSecurity" type="mapiSearchSecurity"/>
+
+  <xs:element name="smtpProtocol" type="mapiSmtpProtocol"/>
+
+  <xs:element name="statistics" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="storageTieringData" type="mapiStorageTieringData"/>
+
+  <xs:element name="storageTieringReport" type="storageTieringList"/>
+
+  <xs:element name="tags" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="tenant" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="tenants" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="userAccount" type="mapiUserAccount"/>
+
+  <xs:element name="userAccounts" type="userAccountList"/>
+
+  <xs:element name="versioningSettings" type="mapiVersioningSettings"/>
+
+  <xs:complexType name="rolesList">
+    <xs:sequence>
+      <xs:element name="role" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="namespacePermissions">
+    <xs:sequence>
+      <xs:element name="namespaceName" type="xs:string" minOccurs="0"/>
+      <xs:element ref="permissions" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="permissionsList">
+    <xs:sequence>
+      <xs:element name="permission" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="userPermissionsList">
+    <xs:sequence>
+      <xs:element name="namespacePermission" type="namespacePermissions" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiAccount">
+    <xs:sequence>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="localAuthentication" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="roles" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiAuthenticationTypes">
+    <xs:sequence>
+      <xs:element name="authenticationType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="chargebackList">
+    <xs:sequence>
+      <xs:element ref="chargebackData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiChargebackData">
+    <xs:sequence>
+      <xs:element name="bytesIn" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesOut" type="xs:long" minOccurs="0"/>
+      <xs:element name="deleted" type="xs:string" minOccurs="0"/>
+      <xs:element name="deletes" type="xs:long" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="ingestedVolume" type="xs:long" minOccurs="0"/>
+      <xs:element name="metadataOnlyBytes" type="xs:long" minOccurs="0"/>
+      <xs:element name="metadataOnlyObjects" type="xs:long" minOccurs="0"/>
+      <xs:element name="namespaceName" type="xs:string" minOccurs="0"/>
+      <xs:element name="objectCount" type="xs:long" minOccurs="0"/>
+      <xs:element name="reads" type="xs:long" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="storageCapacityUsed" type="xs:long" minOccurs="0"/>
+      <xs:element name="systemName" type="xs:string" minOccurs="0"/>
+      <xs:element name="tenantName" type="xs:string" minOccurs="0"/>
+      <xs:element name="tieredBytes" type="xs:long" minOccurs="0"/>
+      <xs:element name="tieredObjects" type="xs:long" minOccurs="0"/>
+      <xs:element name="valid" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="writes" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiCifsProtocol">
+    <xs:sequence>
+      <xs:element name="caseForcing" type="xs:string" minOccurs="0"/>
+      <xs:element name="caseSensitive" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+      <xs:element name="requiresAuthentication" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiipSettings">
+    <xs:sequence>
+      <xs:element name="allowAddresses" type="addresses" minOccurs="0"/>
+      <xs:element name="allowIfInBothLists" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="denyAddresses" type="addresses" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="addresses">
+    <xs:sequence>
+      <xs:element name="ipAddress" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiComplianceSettings">
+    <xs:sequence>
+      <xs:element name="customMetadataChanges" type="xs:string" minOccurs="0"/>
+      <xs:element name="retentionDefault" type="xs:string" minOccurs="0"/>
+      <xs:element name="dispositionEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="shreddingDefault" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiConsoleSecurity">
+    <xs:sequence>
+      <xs:element name="disableAfterAttempts" type="xs:int" minOccurs="0"/>
+      <xs:element name="disableAfterInactiveDays" type="xs:int" minOccurs="0"/>
+      <xs:element name="forcePasswordChangeDays" type="xs:int" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+      <xs:element name="loginMessage" type="xs:string" minOccurs="0"/>
+      <xs:element name="logoutOnInactive" type="xs:int" minOccurs="0"/>
+      <xs:element name="minimumPasswordLength" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiContactInformation">
+    <xs:sequence>
+      <xs:element name="address1" type="xs:string" minOccurs="0"/>
+      <xs:element name="address2" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string" minOccurs="0"/>
+      <xs:element name="countryOrRegion" type="xs:string" minOccurs="0"/>
+      <xs:element name="emailAddress" type="xs:string" minOccurs="0"/>
+      <xs:element name="extension" type="xs:string" minOccurs="0"/>
+      <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+      <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+      <xs:element name="zipOrPostalCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="primaryPhone" type="xs:string" minOccurs="0"/>
+      <xs:element name="state" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="contentClassList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiContentProperty">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="expression" type="xs:string" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="multivalued" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="format" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="contentProperties">
+    <xs:sequence>
+      <xs:element name="contentProperty" type="mapiContentProperty" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="associatedNamespaces">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiContentClass">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="contentProperties" type="contentProperties" minOccurs="0"/>
+      <xs:element name="namespaces" type="associatedNamespaces" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="contentClasses">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiCustomMetadataIndexingSettings">
+    <xs:sequence>
+      <xs:element name="contentClasses" type="contentClasses" minOccurs="0"/>
+      <xs:element name="excludedAnnotations" type="xs:string" minOccurs="0"/>
+      <xs:element name="fullIndexingEnabled" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dataUserList">
+    <xs:sequence>
+      <xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiDataUser">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="username" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="template">
+    <xs:sequence>
+      <xs:element name="from" type="xs:string" minOccurs="0"/>
+      <xs:element name="subject" type="xs:string" minOccurs="0"/>
+      <xs:element name="body" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recipients">
+    <xs:sequence>
+      <xs:element name="recipient" type="recipient" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recipient">
+    <xs:sequence>
+      <xs:element name="address" type="xs:string" minOccurs="0"/>
+      <xs:element name="importance" type="xs:string" minOccurs="0"/>
+      <xs:element name="severity" type="xs:string" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiEmailNotification">
+    <xs:sequence>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="emailTemplate" type="template" minOccurs="0"/>
+      <xs:element name="recipients" type="recipients" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="groupAccountList">
+    <xs:sequence>
+      <xs:element name="groupname" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="groupPermissionsList">
+    <xs:sequence>
+      <xs:element name="namespacePermission" type="namespacePermissions" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiGroupAccount">
+    <xs:sequence>
+      <xs:element name="allowNamespaceManagement" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="externalGroupID" type="xs:string" minOccurs="0"/>
+      <xs:element name="groupname" type="xs:string" minOccurs="0"/>
+      <xs:element ref="roles" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiHttpAndWebdavProtocols">
+    <xs:sequence>
+      <xs:element name="hs3Enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="hs3RequiresAuthentication" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpActiveDirectorySSOEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpsEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+      <xs:element name="restEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="restRequiresAuthentication" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="webdavBasicAuthEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="webdavBasicAuthPassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="webdavBasicAuthUsername" type="xs:string" minOccurs="0"/>
+      <xs:element name="webdavCustomMetadata" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="webdavEnabled" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiipSettingsHelper" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="ingestGatewayList">
+    <xs:sequence>
+      <xs:element name="IngestGatewayData" type="mapiIngestGatewayData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiIngestGatewayData">
+    <xs:sequence>
+      <xs:element name="deleted" type="xs:string" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="fsBytesIn" type="xs:long" minOccurs="0"/>
+      <xs:element name="fsSDUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="fsTOUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="fsWrites" type="xs:long" minOccurs="0"/>
+      <xs:element name="httpBytesIn" type="xs:long" minOccurs="0"/>
+      <xs:element name="httpSDUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="httpTOUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="httpWrites" type="xs:long" minOccurs="0"/>
+      <xs:element name="namespaceName" type="xs:string" minOccurs="0"/>
+      <xs:element name="smtpBytesIn" type="xs:long" minOccurs="0"/>
+      <xs:element name="smtpWrites" type="xs:long" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="systemName" type="xs:string" minOccurs="0"/>
+      <xs:element name="tenantName" type="xs:string" minOccurs="0"/>
+      <xs:element name="valid" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="webdavBytesIn" type="xs:long" minOccurs="0"/>
+      <xs:element name="webdavSDUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="webdavTOUReads" type="xs:long" minOccurs="0"/>
+      <xs:element name="webdavWrites" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linksList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="connectionSettings">
+    <xs:sequence>
+      <xs:element name="localHost" type="xs:string" minOccurs="0"/>
+      <xs:element name="localPort" type="xs:int" minOccurs="0"/>
+      <xs:element name="remoteHost" type="xs:string" minOccurs="0"/>
+      <xs:element name="remotePort" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkStatistics">
+    <xs:sequence>
+      <xs:element name="upToDateAsOfString" type="xs:string" minOccurs="0"/>
+      <xs:element name="upToDateAsOfMillis" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesPending" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesPendingRemote" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesReplicated" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesPerSecond" type="xs:double" minOccurs="0"/>
+      <xs:element name="objectsPending" type="xs:long" minOccurs="0"/>
+      <xs:element name="objectsPendingRemote" type="xs:long" minOccurs="0"/>
+      <xs:element name="objectsReplicated" type="xs:long" minOccurs="0"/>
+      <xs:element name="operationsPerSecond" type="xs:double" minOccurs="0"/>
+      <xs:element name="errors" type="xs:long" minOccurs="0"/>
+      <xs:element name="errorsPerSecond" type="xs:double" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLink">
+    <xs:sequence>
+      <xs:element name="compression" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="connection" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="encryption" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="failoverSettings" minOccurs="0"/>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="priority" type="xs:string" minOccurs="0"/>
+      <xs:element ref="statistics" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="statusMessage" type="xs:string" minOccurs="0"/>
+      <xs:element name="suspended" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkFailoverSettings">
+    <xs:sequence>
+      <xs:element name="local" type="failoverSetting" minOccurs="0"/>
+      <xs:element name="remote" type="failoverSetting" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="failoverSetting">
+    <xs:sequence>
+      <xs:element name="autoFailover" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="autoFailoverMinutes" type="xs:long" minOccurs="0"/>
+      <xs:element name="autoCompleteRecovery" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="autoCompleteRecoveryMinutes" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkContentTenants">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkContentTenant">
+    <xs:sequence>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="upToDateAsOfString" type="xs:string" minOccurs="0"/>
+      <xs:element name="upToDateAsOfMillis" type="xs:long" minOccurs="0"/>
+      <xs:element name="objectsPending" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesPending" type="xs:double" minOccurs="0"/>
+      <xs:element name="objectsPendingRemote" type="xs:long" minOccurs="0"/>
+      <xs:element name="bytesPendingRemote" type="xs:double" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkContentChainedLinks">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkContentDirectories">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkContent">
+    <xs:sequence>
+      <xs:element ref="chainedLinks" minOccurs="0"/>
+      <xs:element ref="defaultNamespaceDirectories" minOccurs="0"/>
+      <xs:element ref="tenants" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkScheduleTransition">
+    <xs:sequence>
+      <xs:element name="time" type="xs:string" minOccurs="0"/>
+      <xs:element name="performanceLevel" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkSchedule">
+    <xs:sequence>
+      <xs:element name="scheduleOverride" type="xs:string" minOccurs="0"/>
+      <xs:element name="transition" type="linkScheduleTransition" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiLinkSchedules">
+    <xs:sequence>
+      <xs:element name="local" type="mapiLinkSchedule" minOccurs="0"/>
+      <xs:element name="remote" type="mapiLinkSchedule" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiMetrics">
+    <xs:sequence>
+      <xs:element name="compressedCount" type="xs:long" minOccurs="0"/>
+      <xs:element name="compressedSavedSize" type="xs:long" minOccurs="0"/>
+      <xs:element name="customMetadataCount" type="xs:long" minOccurs="0"/>
+      <xs:element name="customMetadataSize" type="xs:long" minOccurs="0"/>
+      <xs:element name="ingestedVolume" type="xs:long" minOccurs="0"/>
+      <xs:element name="objectCount" type="xs:long" minOccurs="0"/>
+      <xs:element name="shredCount" type="xs:long" minOccurs="0"/>
+      <xs:element name="shredSize" type="xs:long" minOccurs="0"/>
+      <xs:element name="storageCapacityUsed" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="namespacesList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="nsTagsList">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiNamespace">
+    <xs:sequence>
+      <xs:element name="aclsUsage" type="xs:string" minOccurs="0"/>
+      <xs:element name="authUsersAlwaysGrantedAllPermissions" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="allowPermissionAndOwnershipChanges" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="appendEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="atimeSynchronizationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="authMinimumPermissions" type="permissionsList" minOccurs="0"/>
+      <xs:element name="creationTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="customMetadataIndexingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="customMetadataValidationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="dpl" type="xs:string" minOccurs="0"/>
+      <xs:element name="enterpriseMode" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="fullyQualifiedName" type="xs:string" minOccurs="0"/>
+      <xs:element name="hardQuota" type="xs:string" minOccurs="0"/>
+      <xs:element name="hashScheme" type="xs:string" minOccurs="0"/>
+      <xs:element name="indexingDefault" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="indexingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="isDplDynamic" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="mqeIndexingTimestamp" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="owner" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerType" type="xs:string" minOccurs="0"/>
+      <xs:element name="readFromReplica" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="replicationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="replicationTimestamp" type="xs:string" minOccurs="0"/>
+      <xs:element name="searchEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="servicePlan" type="xs:string" minOccurs="0"/>
+      <xs:element name="serviceRemoteSystemRequests" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="softQuota" type="xs:long" minOccurs="0"/>
+      <xs:element ref="tags" minOccurs="0"/>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="authAndAnonymousMinimumPermissions" type="permissionsList" minOccurs="0"/>
+      <xs:element ref="versioningSettings" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiVersioningSettings">
+    <xs:sequence>
+      <xs:element name="daysOnPrimary" type="xs:long" minOccurs="0"/>
+      <xs:element name="daysOnReplica" type="xs:long" minOccurs="0"/>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="keepDeletionRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="prune" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="pruneDays" type="xs:long" minOccurs="0"/>
+      <xs:element name="pruneOnPrimary" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="pruneOnReplica" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiNamespaceDefaults">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="dpl" type="xs:string" minOccurs="0"/>
+      <xs:element name="effectiveDpl" type="xs:string" minOccurs="0"/>
+      <xs:element name="enterpriseMode" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="hardQuota" type="xs:string" minOccurs="0"/>
+      <xs:element name="hashScheme" type="xs:string" minOccurs="0"/>
+      <xs:element name="replicationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="searchEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="servicePlan" type="xs:string" minOccurs="0"/>
+      <xs:element name="softQuota" type="xs:int" minOccurs="0"/>
+      <xs:element ref="versioningSettings" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiNamespaceProtocols">
+    <xs:sequence>
+      <xs:element name="httpEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpsEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiNfsProtocol">
+    <xs:sequence>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="gid" type="xs:long" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+      <xs:element name="uid" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiReplicationCollisionSettings">
+    <xs:sequence>
+      <xs:element name="action" type="xs:string" minOccurs="0"/>
+      <xs:element name="deleteDays" type="xs:int" minOccurs="0"/>
+      <xs:element name="deleteEnabled" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiReplicationService">
+    <xs:sequence>
+      <xs:element name="allowTenantsToMonitorNamespaces" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="enableDNSFailover" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="enableDomainAndCertificateSynchronization" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="network" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="resourceMetricsList">
+    <xs:sequence>
+      <xs:element ref="resourceMetricsData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiResourceMetricsData">
+    <xs:sequence>
+      <xs:element name="backendReadsPerSec" type="number" minOccurs="0"/>
+      <xs:element name="backendWritesPerSec" type="number" minOccurs="0"/>
+      <xs:element name="cpuSystem" type="number" minOccurs="0"/>
+      <xs:element name="cpuUser" type="number" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="frontendReadsPerSec" type="number" minOccurs="0"/>
+      <xs:element name="frontendWritesPerSec" type="number" minOccurs="0"/>
+      <xs:element name="ioWait" type="number" minOccurs="0"/>
+      <xs:element name="node" type="xs:int" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="swapOut" type="number" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="number" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="mapiResourceTools">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="retentionClassList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiRetentionClass">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="value" type="xs:string" minOccurs="0"/>
+      <xs:element name="allowDisposition" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiSearchSecurity">
+    <xs:sequence>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="servicePlanList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiServicePlan">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiSmtpProtocol">
+    <xs:sequence>
+      <xs:element name="emailFormat" type="xs:string" minOccurs="0"/>
+      <xs:element name="emailLocation" type="xs:string" minOccurs="0"/>
+      <xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="ipSettings" minOccurs="0"/>
+      <xs:element name="separateAttachments" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="storageTieringList">
+    <xs:sequence>
+      <xs:element ref="storageTieringData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiStorageTieringData">
+    <xs:sequence>
+      <xs:element name="deleted" type="xs:string" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="namespaceName" type="xs:string" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="systemName" type="xs:string" minOccurs="0"/>
+      <xs:element name="target" type="xs:string" minOccurs="0"/>
+      <xs:element name="tenantName" type="xs:string" minOccurs="0"/>
+      <xs:element name="valid" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tenantsList">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tenantTagsList">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiTenant">
+    <xs:sequence>
+      <xs:element name="administrationAllowed" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="authenticationTypes" minOccurs="0"/>
+      <xs:element name="complianceConfigurationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="creationTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataNetwork" type="xs:string" minOccurs="0"/>
+      <xs:element name="fullyQualifiedName" type="xs:string" minOccurs="0"/>
+      <xs:element name="hardQuota" type="xs:string" minOccurs="0"/>
+      <xs:element name="managementNetwork" type="xs:string" minOccurs="0"/>
+      <xs:element name="maxNamespacesPerUser" type="xs:int" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="namespaceQuota" type="xs:string" minOccurs="0"/>
+      <xs:element name="replicationConfigurationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="searchConfigurationEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="servicePlan" type="xs:string" minOccurs="0"/>
+      <xs:element name="servicePlanSelectionEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="snmpLoggingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="softQuota" type="xs:long" minOccurs="0"/>
+      <xs:element name="syslogLoggingEnabled" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="systemVisibleDescription" type="xs:string" minOccurs="0"/>
+      <xs:element ref="tags" minOccurs="0"/>
+      <xs:element name="tenantVisibleDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="versioningConfigurationEnabled" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="userAccountList">
+    <xs:sequence>
+      <xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiUserAccount">
+    <xs:complexContent>
+      <xs:extension base="mapiAccount">
+        <xs:sequence>
+          <xs:element name="allowNamespaceManagement" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="description" type="xs:string" minOccurs="0"/>
+          <xs:element name="forcePasswordChange" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="fullName" type="xs:string" minOccurs="0"/>
+          <xs:element name="userGUID" type="xs:string" minOccurs="0"/>
+          <xs:element name="userID" type="xs:int" minOccurs="0"/>
+          <xs:element name="username" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="volumeMetricsList">
+    <xs:sequence>
+      <xs:element name="VolumeMetricsData" type="mapiVolumeMetricsData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapiVolumeMetricsData">
+    <xs:sequence>
+      <xs:element name="deleted" type="xs:string" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="nodeNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="otherPercent" type="xs:long" minOccurs="0"/>
+      <xs:element name="otherSeconds" type="xs:long" minOccurs="0"/>
+      <xs:element name="spinDownPercent" type="xs:long" minOccurs="0"/>
+      <xs:element name="spinDownSeconds" type="xs:long" minOccurs="0"/>
+      <xs:element name="spinUpPercent" type="xs:long" minOccurs="0"/>
+      <xs:element name="spinUpSeconds" type="xs:long" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="systemName" type="xs:string" minOccurs="0"/>
+      <xs:element name="valid" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="volumeId" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
