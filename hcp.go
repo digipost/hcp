@@ -66,7 +66,7 @@ func (hcp *HCP) createOrUpdateUserAccount(create bool, userAccount *UserAccount,
 		return doReqErr
 	} else {
 		if res.StatusCode != http.StatusOK {
-			return fmt.Errorf("Failed to create HCP user account for username: %s. Status code: %d, HCP error message: %s",
+			return fmt.Errorf("Failed to create or update HCP user account for username: %s. Status code: %d, HCP error message: %s",
 				userAccount.Username,
 				res.StatusCode,
 				hcpErrorMessage(res))
