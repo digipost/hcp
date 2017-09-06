@@ -31,8 +31,8 @@ type UserAccount struct {
 	FullName                 string   `xml:"fullName,omitempty"`
 	Description              string   `xml:"description,omitempty"`
 	LocalAuthentication      bool     `xml:"localAuthentication,omitempty"`
-	ForcePasswordChange      bool     `xml:"forcePasswordChange,omitempty"`
-	Enabled                  bool     `xml:"enabled,omitempty"`
+	ForcePasswordChange      bool     `xml:"forcePasswordChange"`
+	Enabled                  bool     `xml:"enabled"`
 	Roles                    []string `xml:"roles>role,omitempty"`
 	AllowNamespaceManagement bool     `xml:"allowNamespaceManagement,omitempty"`
 }
