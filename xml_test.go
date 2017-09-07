@@ -29,7 +29,7 @@ func TestShoulBeAbleToUnmarshalUserAccountXML(t *testing.T) {
 func TestShouldOmitIfEmptyOnUserAccountXML(t *testing.T) {
 
 	xml, _ := (&UserAccount{Roles: []string{COMPLIANCE, MONITOR, ADMINISTRATOR}}).marshal()
-	assert.Equal(t, "<userAccount><roles><role>COMPLIANCE</role><role>MONITOR</role><role>ADMINISTRATOR</role></roles></userAccount>", string(xml))
+	assert.Equal(t, "<userAccount><forcePasswordChange>false</forcePasswordChange><enabled>false</enabled><roles><role>COMPLIANCE</role><role>MONITOR</role><role>ADMINISTRATOR</role></roles></userAccount>", string(xml))
 
 }
 
