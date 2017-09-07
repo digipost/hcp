@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"regexp"
 )
 
@@ -34,46 +33,85 @@ func (hcp *HCP) authenticationToken() string {
 /** User Account methods */
 
 func (hcp *HCP) CreateUserAccount(userAccount *UserAccount, password string) error {
-	return hcp.createOrUpdateUserAccount(true, userAccount, password)
+
+	if req, reqErr := hcp.createPutRequest("/userAccounts", userAccount); reqErr != nil {
+		return reqErr
+	} else {
+
+		if err := validatePassword(password); err != nil {
+			return err
+		}
+		query := req.URL.Query()
+		query.Set("password", password)
+		req.URL.RawQuery = query.Encode()
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to create HCP user account for username: %s. Status code: %d, HCP error message: %s",
+					userAccount.Username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+
+		}
+
+	}
+
+}
+
+func (hcp *HCP) UpdateUserAccountExceptPassword(userAccount *UserAccount) error {
+
+	if req, reqErr := hcp.createPostRequest("/userAccounts/"+userAccount.Username, userAccount); reqErr != nil {
+		return reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to update HCP user account except password for username: %s. Status code: %d, HCP error message: %s",
+					userAccount.Username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+
+		}
+	}
+
 }
 
 func (hcp *HCP) UpdateUserAccount(userAccount *UserAccount, password string) error {
-	return hcp.createOrUpdateUserAccount(false, userAccount, password)
-}
 
-func (hcp *HCP) createOrUpdateUserAccount(create bool, userAccount *UserAccount, password string) error {
-
-	if err := validatePassword(password); err != nil {
-		return err
-	}
-
-	var request *http.Request
-	if create {
-		if req, reqErr := hcp.createPutRequest("/userAccounts?password="+url.QueryEscape(password), userAccount); reqErr != nil {
-			return reqErr
-		} else {
-			request = req
-		}
+	if req, reqErr := hcp.createPostRequest("/userAccounts/"+userAccount.Username, userAccount); reqErr != nil {
+		return reqErr
 	} else {
-		if req, reqErr := hcp.createPostRequest("/userAccounts/"+userAccount.Username+"?password="+url.QueryEscape(password), userAccount); reqErr != nil {
-			return reqErr
-		} else {
-			request = req
-		}
-	}
 
-	if res, doReqErr := hcp.getClient().Do(request); doReqErr != nil {
-		return doReqErr
-	} else {
-		if res.StatusCode != http.StatusOK {
-			return fmt.Errorf("Failed to create or update HCP user account for username: %s. Status code: %d, HCP error message: %s",
-				userAccount.Username,
-				res.StatusCode,
-				hcpErrorMessage(res))
-		} else {
-			return nil
+		if err := validatePassword(password); err != nil {
+			return err
 		}
+		query := req.URL.Query()
+		query.Set("password", password)
+		req.URL.RawQuery = query.Encode()
 
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to update HCP user account for username: %s. Status code: %d, HCP error message: %s",
+					userAccount.Username,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+
+		}
 	}
 
 }

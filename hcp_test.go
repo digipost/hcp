@@ -299,37 +299,3 @@ func TestNamespaceFailure(t *testing.T) {
 
 	assert.Contains(t, err.Error(), errorMsg)
 }
-
-/*
-
-// Use for live testing
-func TestCreateUserAccounts(t *testing.T) {
-
-	hcp := &HCP{
-		URL:      "",
-		Insecure: true,
-		Username: "",
-		Password: "",
-	}
-
-	userAccount := &UserAccount{
-		Username:                 "mwhite",
-		FullName:                 "Morgan White",
-		Description:              "Compliance officer.",
-		LocalAuthentication:      true,
-		ForcePasswordChange:      true,
-		Enabled:                  true,
-		AllowNamespaceManagement: false,
-	}
-
-	if err := hcp.CreateUserAccount(userAccount, ""); err != nil {
-		panic(err)
-	} else {
-		if !created {
-
-			t.Fail()
-		}
-	}
-
-}
-*/
