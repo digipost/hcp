@@ -61,3 +61,21 @@ func TestShouldBeAbleToUnmarshalNamespaceXML(t *testing.T) {
 	assert.Equal(t, "lgreen", ns.Tags[1])
 
 }
+
+func TestShouldOmitVersioningSettingOnNamespaceXML(t *testing.T) {
+	xml, _ := (&Namespace{Name: "name"}).marshal()
+	assert.Equal(t,
+		"<namespace>"+
+			"<name>name</name>"+
+			"<enterpriseMode>false</enterpriseMode>"+
+			"<searchEnabled>false</searchEnabled>"+
+			"<indexingEnabled>false</indexingEnabled>"+
+			"<customMetadataIndexingEnabled>false</customMetadataIndexingEnabled>"+
+			"<replicationEnabled>false</replicationEnabled>"+
+			"<readFromReplica>false</readFromReplica>"+
+			"<serviceRemoteSystemRequests>false</serviceRemoteSystemRequests>"+
+			"<tags></tags>"+
+			"</namespace>",
+		string(xml))
+
+}
