@@ -61,16 +61,15 @@ func TestCreateUserAccountFailure(t *testing.T) {
 
 func TestCreateUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
-	userAccount := &UserAccount{Username: "username"}
-
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
-		assert.NotContains(t, r.URL.Path, userAccount.Username)
+		assert.Equal(t, r.URL.Path, "/userAccounts")
 		assert.Equal(t, r.Method, http.MethodPut)
 	}))
+
 	defer ts.Close()
 
 	hcp := &HCP{URL: ts.URL}
-	hcp.CreateUserAccount(userAccount, validPassword)
+	hcp.CreateUserAccount(&UserAccount{}, validPassword)
 
 }
 
@@ -144,9 +143,10 @@ func TestUserAccountFailure(t *testing.T) {
 func TestUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
-		assert.Contains(t, r.URL.Path, "mwhite")
+		assert.Equal(t, r.URL.Path, "/userAccounts/mwhite")
 		assert.Equal(t, r.Method, http.MethodGet)
 	}))
+
 	defer ts.Close()
 
 	hcp := &HCP{URL: ts.URL}
@@ -191,7 +191,7 @@ func TestDeleteUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
 		res.WriteHeader(http.StatusOK)
-		assert.Contains(t, r.URL.Path, "mwhite")
+		assert.Equal(t, r.URL.Path, "/userAccounts/mwhite")
 		assert.Equal(t, http.MethodDelete, r.Method)
 	}))
 
@@ -245,7 +245,7 @@ func TestUserAccountExistsFailure(t *testing.T) {
 func TestUserAccountExistsShouldTargetCorrectEndpoint(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
-		assert.Contains(t, r.URL.Path, "white")
+		assert.Equal(t, r.URL.Path, "/userAccounts/mwhite")
 		assert.Equal(t, r.Method, http.MethodHead)
 		res.WriteHeader(http.StatusOK)
 	}))
