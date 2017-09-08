@@ -2,6 +2,7 @@ package hcp
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -26,6 +27,62 @@ func (hcp *HCP) CreateNamespace(namespace *Namespace) error {
 
 	}
 
+}
+
+func (hcp *HCP) UpdateNamespace(namespace *Namespace) error {
+
+	if req, reqErr := hcp.createPostRequest("/namespaces/"+namespace.Name, namespace); reqErr != nil {
+		return reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to update HCP namespace: %s. Status code: %d, HCP error message: %s",
+					namespace.Name,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+
+		}
+	}
+
+}
+
+func (hcp *HCP) Namespace(name string) (*Namespace, error) {
+
+	if req, reqErr := hcp.createGetRequest("/namespaces/" + name); reqErr != nil {
+		return nil, reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return nil, doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return nil, fmt.Errorf("Failed to retrieve HCP namespace: %s. Status code: %d, HCP error message: %s",
+					name,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+
+				if bytes, readErr := ioutil.ReadAll(res.Body); readErr != nil {
+					return nil, readErr
+				} else {
+					namespace := &Namespace{}
+					if unmarshalErr := unmarshal(bytes, namespace); unmarshalErr != nil {
+						return nil, unmarshalErr
+					} else {
+						return namespace, nil
+					}
+				}
+
+			}
+		}
+
+	}
 }
 
 func (hcp *HCP) DeleteNamespace(name string) error {
