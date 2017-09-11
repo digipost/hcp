@@ -75,6 +75,13 @@ const (
 	TB = "TB"
 )
 
+// ACL usage
+const (
+	NOT_ENABLED  = "NOT_ENABLED"
+	ENFORCED     = "ENFORCED"
+	NOT_ENFORCED = "NOT_ENFORCED"
+)
+
 type Namespace struct {
 	XMLName                       xml.Name            `xml:"namespace"`
 	Name                          string              `xml:"name,omitempty"`
@@ -91,6 +98,7 @@ type Namespace struct {
 	ReplicationEnabled            bool                `xml:"replicationEnabled"`
 	ReadFromReplica               bool                `xml:"readFromReplica"`
 	ServiceRemoteSystemRequests   bool                `xml:"serviceRemoteSystemRequests"`
+	AclsUsage                     string              `xml:"aclsUsage,omitempty"`
 	Tags                          []string            `xml:"tags>tag,omitempty"`
 }
 
