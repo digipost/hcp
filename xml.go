@@ -82,6 +82,12 @@ const (
 	NOT_ENFORCED = "NOT_ENFORCED"
 )
 
+// Owner type
+const (
+	LOCAL    = "LOCAL"
+	EXTERNAL = "EXTERNAL"
+)
+
 type Namespace struct {
 	XMLName                       xml.Name            `xml:"namespace"`
 	Name                          string              `xml:"name,omitempty"`
@@ -99,6 +105,8 @@ type Namespace struct {
 	ReadFromReplica               bool                `xml:"readFromReplica"`
 	ServiceRemoteSystemRequests   bool                `xml:"serviceRemoteSystemRequests"`
 	AclsUsage                     string              `xml:"aclsUsage,omitempty"`
+	OwnerType                     string              `xml:"ownerType,omitempty"`
+	Owner                         string              `xml:"owner,omitempty"`
 	Tags                          []string            `xml:"tags>tag,omitempty"`
 }
 
