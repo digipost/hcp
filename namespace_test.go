@@ -187,7 +187,6 @@ func TestDeleteNamespaceShouldTargetCorrectEndpoint(t *testing.T) {
 func TestNamespaceExistsSuccess(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
-
 		res.WriteHeader(http.StatusOK)
 	}))
 
@@ -224,5 +223,100 @@ func TestNamespaceExistsShouldTargetCorrectEndpoint(t *testing.T) {
 
 	hcp := &HCP{URL: ts.URL}
 	hcp.NamespaceExists("mynamespace")
+
+}
+
+// Namespace Protocol HTTP - Update
+
+func TestUpdateNamespaceProtocolHttpSuccess(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	err := hcp.UpdateNamespaceProtocolHttp("mynamespace", &HttpProtocol{})
+
+	assert.Empty(t, err)
+
+}
+
+func TestUpdateNamespaceProtocolHttpFailure(t *testing.T) {
+
+	const errorMsg = "some random error"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.Header().Set(xHcpErrorMessage, errorMsg)
+		res.WriteHeader(http.StatusBadGateway)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	err := hcp.UpdateNamespaceProtocolHttp("mynamespace", &HttpProtocol{})
+
+	assert.Contains(t, err.Error(), errorMsg)
+
+}
+
+func TestUpdateNamespaceProtocolHttpShouldTargetCorrectEndpoint(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/namespaces/mynamespace/protocols/http", r.URL.Path)
+		assert.Equal(t, http.MethodPost, r.Method)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	hcp.UpdateNamespaceProtocolHttp("mynamespace", &HttpProtocol{})
+
+}
+
+// Namespace Protocol HTTP - Read
+
+func TestReadNamespaceProtocolHttpSuccess(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.WriteHeader(http.StatusOK)
+		data, _ := ioutil.ReadFile("xml/namespace/response/NamespaceProtocolHttp.xml")
+		res.Write(data)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	httpProtocol, err := hcp.ReadNamespaceProtocolHttp("")
+
+	assert.Empty(t, err)
+	assert.Equal(t, 4, len(httpProtocol.IpSettings.AllowAddresses))
+	assert.Equal(t, "192.168.140.10", httpProtocol.IpSettings.AllowAddresses[0])
+	assert.True(t, httpProtocol.RestEnabled)
+
+}
+
+func TestReadNamespaceProtocolHttpFailure(t *testing.T) {
+
+	const errorMsg = "some random error"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		res.Header().Set(xHcpErrorMessage, errorMsg)
+		res.WriteHeader(http.StatusBadGateway)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	_, err := hcp.ReadNamespaceProtocolHttp("")
+
+	assert.Contains(t, err.Error(), errorMsg)
+
+}
+
+func TestReadNamespaceProtocolHttpShouldTargetCorrectEndpoint(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/namespaces/mynamespace/protocols/http", r.URL.Path)
+		assert.Equal(t, http.MethodGet, r.Method)
+	}))
+
+	hcp := &HCP{URL: ts.URL}
+
+	hcp.ReadNamespaceProtocolHttp("mynamespace")
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<httpProtocol>
+    <httpsEnabled>true</httpsEnabled>
+    <httpEnabled>false</httpEnabled>
+    <restEnabled>true</restEnabled>
+    <restRequiresAuthentication>true</restRequiresAuthentication>
+    <httpActiveDirectorySSOEnabled>true</httpActiveDirectorySSOEnabled>
+    <ipSettings>
+        <allowAddresses>
+            <ipAddress>192.168.140.10</ipAddress>
+            <ipAddress>192.168.140.14</ipAddress>
+            <ipAddress>192.168.140.15</ipAddress>
+            <ipAddress>192.168.149.0/24</ipAddress>
+        </allowAddresses>
+        <allowIfInBothLists>false</allowIfInBothLists>
+        <denyAddresses>
+            <ipAddress>192.168.149.5</ipAddress>
+        </denyAddresses>
+    </ipSettings>
+</httpProtocol>

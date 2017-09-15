@@ -125,3 +125,61 @@ func (hcp *HCP) NamespaceExists(name string) (bool, error) {
 
 	}
 }
+
+// Namespace Protocol HTTP sub-resources
+
+func (hcp *HCP) UpdateNamespaceProtocolHttp(name string, httpProtocol *HttpProtocol) error {
+
+	if req, reqErr := hcp.createPostRequest("/namespaces/"+name+"/protocols/http", httpProtocol); reqErr != nil {
+		return reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return fmt.Errorf("Failed to update HCP namespace protocol http: %s. Status code: %d, HCP error message: %s",
+					name,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+				return nil
+			}
+		}
+
+	}
+
+}
+
+func (hcp *HCP) ReadNamespaceProtocolHttp(name string) (*HttpProtocol, error) {
+
+	if req, reqErr := hcp.createGetRequest("/namespaces/" + name + "/protocols/http"); reqErr != nil {
+		return nil, reqErr
+	} else {
+
+		if res, doReqErr := hcp.getClient().Do(req); doReqErr != nil {
+			return nil, doReqErr
+		} else {
+			if res.StatusCode != http.StatusOK {
+				return nil, fmt.Errorf("Failed to retrieve HCP namespace: %s. Status code: %d, HCP error message: %s",
+					name,
+					res.StatusCode,
+					hcpErrorMessage(res))
+			} else {
+
+				if bytes, readErr := ioutil.ReadAll(res.Body); readErr != nil {
+					return nil, readErr
+				} else {
+					namespace := &HttpProtocol{}
+					if unmarshalErr := unmarshal(bytes, namespace); unmarshalErr != nil {
+						return nil, unmarshalErr
+					} else {
+						return namespace, nil
+					}
+				}
+
+			}
+		}
+
+	}
+}

@@ -127,3 +127,36 @@ func (ns *Namespace) Reader() (*bytes.Reader, error) {
 		return bytes.NewReader(xml), nil
 	}
 }
+
+/************************
+ * Namespace Protocol Http
+ ************************/
+
+type HttpProtocol struct {
+	XMLName                    xml.Name    `xml:"httpProtocol"`
+	Hs3Enabled                 bool        `xml:"hs3Enabled"`
+	Hs3RequiresAuthentication  bool        `xml:"hs3RequiresAuthentication"`
+	HttpEnabled                bool        `xml:"httpEnabled"`
+	HttpsEnabled               bool        `xml:"httpsEnabled"`
+	RestEnabled                bool        `xml:"restEnabled"`
+	RestRequiresAuthentication bool        `xml:"restRequiresAuthentication"`
+	IpSettings                 *IpSettings `xml:"ipSettings"`
+}
+
+type IpSettings struct {
+	AllowAddresses     []string `xml:"allowAddresses>ipAddress"`
+	DenyAddresses      []string `xml:"denyAddresses>ipAddress"`
+	AllowIfInBothLists bool     `xml:"allowIfInBothLists"`
+}
+
+func (uA *HttpProtocol) marshal() ([]byte, error) {
+	return xml.Marshal(uA)
+}
+
+func (uA *HttpProtocol) Reader() (*bytes.Reader, error) {
+	if xml, error := uA.marshal(); error != nil {
+		return nil, error
+	} else {
+		return bytes.NewReader(xml), nil
+	}
+}
