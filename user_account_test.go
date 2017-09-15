@@ -130,7 +130,7 @@ func TestUserAccountSuccess(t *testing.T) {
 
 	hcp := &HCP{URL: ts.URL}
 
-	uA, err := hcp.UserAccount("mwhite")
+	uA, err := hcp.ReadUserAccount("mwhite")
 
 	assert.Empty(t, err)
 	assert.Equal(t, "mwhite", uA.Username)
@@ -147,7 +147,7 @@ func TestUserAccountFailure(t *testing.T) {
 
 	hcp := &HCP{URL: ts.URL}
 
-	_, err := hcp.UserAccount("mwhite")
+	_, err := hcp.ReadUserAccount("mwhite")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), errorMsg)
 
@@ -163,7 +163,7 @@ func TestUserAccountShouldTargetCorrectEndpoint(t *testing.T) {
 	defer ts.Close()
 
 	hcp := &HCP{URL: ts.URL}
-	hcp.UserAccount("mwhite")
+	hcp.ReadUserAccount("mwhite")
 
 }
 

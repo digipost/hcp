@@ -104,7 +104,7 @@ func TestNamespaceSuccess(t *testing.T) {
 
 	hcp := &HCP{URL: ts.URL}
 
-	namespace, err := hcp.Namespace("Accounts-Receivable")
+	namespace, err := hcp.ReadNamespace("Accounts-Receivable")
 
 	assert.Empty(t, err)
 	assert.Equal(t, "Accounts-Receivable", namespace.Name)
@@ -122,7 +122,7 @@ func TestNamespaceFailure(t *testing.T) {
 
 	hcp := &HCP{URL: ts.URL}
 
-	_, err := hcp.Namespace("Accounts-Receivable")
+	_, err := hcp.ReadNamespace("Accounts-Receivable")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), errorMsg)
 
@@ -138,7 +138,7 @@ func TestNamespaceShouldTargetCorrectEndpoint(t *testing.T) {
 	defer ts.Close()
 
 	hcp := &HCP{URL: ts.URL}
-	hcp.Namespace("Accounts-Receivable")
+	hcp.ReadNamespace("Accounts-Receivable")
 
 }
 

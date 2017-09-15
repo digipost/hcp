@@ -91,7 +91,7 @@ func (hcp *HCP) UpdateUserAccount(userAccount *UserAccount, password string) err
 
 }
 
-func (hcp *HCP) UserAccount(username string) (*UserAccount, error) {
+func (hcp *HCP) ReadUserAccount(username string) (*UserAccount, error) {
 
 	if req, reqErr := hcp.createGetRequest("/userAccounts/" + username); reqErr != nil {
 		return nil, reqErr

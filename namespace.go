@@ -52,7 +52,7 @@ func (hcp *HCP) UpdateNamespace(namespace *Namespace) error {
 
 }
 
-func (hcp *HCP) Namespace(name string) (*Namespace, error) {
+func (hcp *HCP) ReadNamespace(name string) (*Namespace, error) {
 
 	if req, reqErr := hcp.createGetRequest("/namespaces/" + name); reqErr != nil {
 		return nil, reqErr
